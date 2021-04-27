@@ -1,0 +1,49 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/security
+    http://www.springframework.org/schema/security/spring-security.xsd">
+
+    <beans:import resource="applicationContext.xml"/>
+
+    <http auto-config="true">
+        <intercept-url pattern="customerRegistration" access="isAnonymous()"/>
+        <intercept-url pattern="/getCustomerDetailsByEmail/{email}" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/editCustomerDetails" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/updateCustomerDetails" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/deleteCustomerDetails" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/checkOut/{email}" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/checkOutSave" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/placeOrderDetails/{orderId}" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/seller" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/addBookInClientSide" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/listOfBooks" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/editBook/{bookId}" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/addBookInClientSideSave" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/getbookWarehouseDtoById/{bookId}" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/getbookWarehouseDtoBySellerName" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/updateBookInClientSide" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/getbookWarehouseDtoByBookName/{bookName}" access="hasRole('ROLE_CUSTOMER')"/>
+        <intercept-url pattern="/deleteBookInClientSide/{bookId}" access="hasRole('ROLE_CUSTOMER')"/>
+        <form-login
+                login-page="/login"
+                authentication-failure-url="/login?error"
+                username-parameter="username"
+                password-parameter="password"/>
+
+        <logout logout-success-url="/login?logout"/>
+        <csrf/>
+    </http>
+
+    <beans:bean id="passwordEncoder" class="org.springframework.security.crypto.password.NoOpPasswordEncoder"/>
+
+    <authentication-manager>
+        <authentication-provider>
+            <jdbc-user-service data-source-ref="driverManagerDataSource"
+                               users-by-username-query="SELECT  email,password,1 FROM customerdto WHERE email=?"
+                               authorities-by-username-query="SELECT  email,role FROM customerdto WHERE email=?"/>
+        </authentication-provider>
+    </authentication-manager>
+</beans:beans>

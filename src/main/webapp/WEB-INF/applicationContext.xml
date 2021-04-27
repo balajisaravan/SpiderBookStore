@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="customerCustomValidation" class="com.customValidation.CustomerCustomValidation"/>
+
+    <bean id="customerService" class="com.service.CustomerServiceImpl">
+        <property name="roles" value="ROLE_CUSTOMER"/>
+        <property name="customerDao" ref="customerDao"/>
+    </bean>
+
+    <bean id="forgetPasswordService" class="com.service.ForgetPasswordServiceImpl">
+        <property name="forgetPasswordDao" ref="forgetPasswordDao"/>
+    </bean>
+
+    <bean id="customerDao" class="com.dao.CustomerDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="forgetPasswordDao" class="com.dao.ForgetPasswordDaoImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="driverManagerDataSource"/>
+    </bean>
+
+    <bean id="driverManagerDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/spiderbookstore"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+
+    <bean id="clientRestService" class="com.serviceClientRest.ClientRestServiceImpl">
+        <property name="restTemplate" ref="restTemplate"/>
+    </bean>
+
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate" >
+        <property name="messageConverters">
+            <util:list>
+                <bean id="mappingJackson2HttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+            </util:list>
+        </property>
+    </bean>
+
+    <bean id="emailService" class="com.service.EmailServiceImpl">
+        <property name="javaMailSender" ref="javaMailSender"></property>
+    </bean>
+
+    <bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <property name="host" value="smtp.googlemail.com" />
+        <property name="port" value="587" />
+        <property name="username" value="ncbalajisaravanan03150@gmail.com" />
+        <property name="password" value="ndnknc1998" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.smtp.ssl.trust">smtp.googlemail.com</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>
